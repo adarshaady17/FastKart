@@ -9,12 +9,13 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // Fetch products from backend
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${FILE_API_END_POINT}/files`, {
+      const res = await axios.get(`${FILE_API_END_POINT}/get`, {
         withCredentials: true,
       });
-      setProducts(res.data.files.reverse()); // show latest first
+      setProducts(res.data.pro.reverse());
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -22,11 +23,12 @@ const ProductPage = () => {
     }
   };
 
+  // Check admin role from localStorage
   const checkAdminStatus = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setIsAdmin(user.role === "admin"); // adjust the key if your user object is different
+      setIsAdmin(user.role === "admin");
     }
   };
 
@@ -62,13 +64,14 @@ const ProductPage = () => {
               className="cursor-pointer bg-white rounded-2xl shadow p-4 hover:shadow-lg hover:scale-[1.01] transition-transform"
             >
               <img
-                src={product.imagePath}
-                alt={product.ImgName}
-                className="w-full h-48 object-cover rounded-xl mb-4"
+                src={product.Img || "/placeholder.jpg"}
+                alt={product.ProName}
+                onError={(e) => (e.target.src = "/placeholder.jpg")}
+                className="w-auto h-52 object-cover rounded-xl"
               />
-              <h2 className="text-xl font-semibold">{product.ImgName}</h2>
-              <p className="text-blue-600 font-medium">₹{product.price}</p>
-              <p className="text-gray-600 text-sm mt-2">{product.description}</p>
+              <h2 className="text-xl font-semibold">{product.ProName}</h2>
+              <p className="text-blue-600 font-medium">₹{product.Price}</p>
+              <p className="text-gray-600 text-sm mt-2 line-clamp-2">{product.Description}</p>
             </div>
           ))}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { USER_API_END_POINT } from "../../utils/constant";
@@ -6,14 +6,19 @@ import { isLoggedIn, getUser, removeUser } from "../../utils/auth"; // utility f
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const user = getUser();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = getUser(); // Retrieving user data from localStorage
+    setUser(userData);
+  }, []);
 
   const handleLogout = async () => {
     try {
       await axios.get(`${USER_API_END_POINT}/logout`, {
         withCredentials: true,
       });
-      removeUser(); // clear from localStorage
+      removeUser(); // clear user data from localStorage
       alert("Logged out successfully!");
       navigate("/login");
     } catch (error) {
@@ -40,9 +45,11 @@ const Navbar = () => {
 
         {/* Right side: Auth buttons */}
         <div className="space-x-4">
-          {isLoggedIn() ? (
+          {isLoggedIn() && user ? (
             <>
-              <span className="text-gray-700">Hi, {user.fullname}</span>
+              <span className="text-gray-700 text-sm md:text-base">
+                Hi, {user.name}
+              </span>
               <button
                 onClick={handleLogout}
                 className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 transition"

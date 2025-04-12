@@ -1,40 +1,34 @@
-const express = require("express");
-const app = express();
-require("dotenv").config();
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./database/db.js";
+import prorouter from "./routes/pro.routes.js";
+import UserRouter from "./routes/user.routes.js";
 
-const port = process.env.PORT || 5000;
 
+const app=express();
+dotenv.config({});
+
+connectDB();
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
 
-const dbConnect = require("./config/database");
-dbConnect();
+const corsOptions={
+    origin: 'http://localhost:5173',
+    credentials:true
+}
+ 
 
-const cors = require("cors");
+app.use(cors(corsOptions));
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+const PORT=process.env.PORT || 5000;
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("API is working");
-});
+//api
+app.use("/api/v1/product",prorouter);
+app.use("/api/v1/user",UserRouter);
 
-// Routes
-const fileRoute = require("./routes/FileRoute");
-const userRoute = require("./routes/userRoute");
-
-app.use("/api/v1/file", fileRoute);
-app.use("/api/v1/user", userRoute);
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app.listen(PORT,()=>{
+    console.log(`sever is running at ${PORT}`);
+})

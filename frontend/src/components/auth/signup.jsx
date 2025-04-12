@@ -4,10 +4,10 @@ import { USER_API_END_POINT } from "../../utils/constant";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    fullname: "",
+    Name: "",
     email: "",
     password: "",
-    role: "user",
+    Role: "user",
   });
 
   const handleChange = (e) => {
@@ -19,7 +19,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+      const res = await axios.post(`${USER_API_END_POINT}/signup`, formData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -45,9 +45,9 @@ const Signup = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            name="fullname"
+            name="Name"
             placeholder="Full Name"
-            value={formData.fullname}
+            value={formData.Name}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -71,8 +71,8 @@ const Signup = () => {
             required
           />
           <select
-            name="role"
-            value={formData.role}
+            name="Role"
+            value={formData.Role}
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
